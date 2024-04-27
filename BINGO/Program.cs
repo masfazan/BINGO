@@ -1,88 +1,79 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
-int jogador = 0, cartelas=0, npossiveis=0, nsorteado=0, nbingo=0, contador=0, aux=0, contadorCartela = 0;
+﻿int jogador = 0, cartelas = 0, npossiveis = 0, nsorteado = 0, nbingo = 0, contador = 0, aux = 0, contadorCartela = 0, num = 0, linha = 0, coluna = 0;
 int[] njogador = new int[jogador];
-int[,] cartelabingo=new int[5,5];
-int[] cartelasorteio = new int[99] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
+int[,] cartelabingo = new int[5, 5];
+int[] cartelaSorteio = new int[99] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
 
 Console.WriteLine("....BINGO....");
-void Imprimir(float[,] matriz, string titulo)
-{
-    Console.WriteLine();
-    for (int linha = 0; linha < 5; linha++)
-    {
-        Console.WriteLine();
-        for (int coluna = 0; coluna < 5; coluna++)
-        {
-            Console.Write(matriz[linha, coluna] + " ");
-        }
-    }
-}//ok
+
 void NumeroJogadores()
 {
     Console.WriteLine("Digite o número de jogadores: ");
     jogador = int.Parse(Console.ReadLine());
 }//ok
-void NumeroCartelas()
+int NumeroCartelas()
 {
-    Console.WriteLine("Digite o número de cartelas para os jogadores: ");
-    cartelas = int.Parse(Console.ReadLine());
+    {
+        Console.WriteLine("Digite o número de cartelas para os jogadores: ");
+        cartelas = int.Parse(Console.ReadLine());
+    }
+    return cartelas;
 }//ok
 void CartelaBase()
 {
     for (int nsorteado = 0; nsorteado < 99; nsorteado++)
     {
-        cartelasorteio[nsorteado] = nsorteado + 1;
-        Console.Write($"{cartelasorteio[nsorteado]},\n");
+        cartelaSorteio[nsorteado] = nsorteado + 1;
+        Console.Write($"{cartelaSorteio[nsorteado]}|");
     }
 }//ok
-int[,] CartelaJogador()
+int[,] SorteioCartela()
 {
+
     int[,] cartelaJogador = new int[5, 5];
-    return cartelaJogador;
+    Random random = new Random();
 
-}
-int checarRepetido(int[,] cartelasorteio)
-{
-    int aux = new Random().Next(1, 100);
-    for (int i = 0; i < 5; i++)
+    for (int linha = 0; linha < 5; linha++)
     {
-        for (int j = 0; j < 5; j++)
+        for (int coluna = 0; coluna < 5; coluna++)
         {
-            if (cartelasorteio[i, j] == aux)
+            aux = random.Next(1, 100);
+            if (cartelaJogador[linha, coluna] == 0)
             {
-                aux = 0;
+                cartelaJogador[linha, coluna] = aux;
+                cartelaJogador[linha, coluna]++;
             }
+            else
+            {
+                bool repetido = false;
+                {
+                    if (cartelaJogador[linha, coluna] == aux)
+                    {
+                        repetido = true;
+                    }
+                }
+                if (!repetido)
+                {
+                    cartelaJogador[linha, coluna] = aux;
 
+                }
+                else
+                {
+                    coluna--;
+                }
+            }
+            Console.Write($"{cartelaJogador[linha, coluna]}|");
         }
     }
-    return aux;
-
-}
-void SorteioCartela()
+    contador++;
+    return cartelaJogador;
+} //enquanto retorno da função numero de cartelas for menor que cartelaJogador, imrime mais cartelas
+  //precisa imprimir cartela do jogador 1 e cartela do jogador 2
+  //tá imprimindo repetido
+int SorteioBingo()
 {
-    int[,] cartelasorteio = CartelaJogador();
-    int num = 0;
-    for (int i = 0; i < 5; i++)
-    {
-        for (int j = 0; j < 5; j++)
-        {
-            while (num == 0)
-            {                
-                num = checarRepetido(cartelasorteio);               
-            }
-            cartelasorteio[i, j] = num;
-
-        }
-    }
-    Console.WriteLine(Cartela(cartelasorteio));
-}
-void SorteioBingo()
-{   //sortear 1 por vez e marcar na função ou vetor base qual número já foi
+    Random random = new Random();
     while (contador < 99)
     {
-        Random random = new Random();
         aux = random.Next(1, 100);
         if (nbingo == 0)
         {
@@ -105,54 +96,29 @@ void SorteioBingo()
                 nbingo++;
             }
         }
+        Console.WriteLine("O número sorteado foi:" + nbingo + "!");
     }
     contador++;
+    return nbingo;
 
-}//ok
-int[,] Cartela(int [,]cartelasorteio)
+}//Sorteando infinito
+bool NumeroMarcado(int[,] cartelaJogador, int nbingo, int num)
 {
-    //for (int linha = 0; linha < 5; linha++)
-    //{
-    //    for (int coluna = 0; coluna < 5; coluna++)
-    //    {
-    //        cartelabingo[linha, coluna] = cartelasorteio[nsorteado];
-    //    }
-    //}
-    for (int linha = 0; linha < 5; linha++)
+
+    for (int i = 0; i < 5; i++)
     {
-        Console.WriteLine();
-        for (int coluna = 0; coluna < 5; coluna++)
+        for (int j = 0; j < 5; j++)
         {
-            Console.Write(cartelasorteio[linha, coluna] + "| ");
-        }
-    }
-    return cartelasorteio;
-}//ok
-void NumeroMarcado(int[,] cartelabingo)
-{
-    for (int linha = 0; linha < 5; linha++)
-    {
-        for (int coluna = 0; coluna < 5; coluna++)
-        {
-            if (cartelabingo[linha, coluna] == aux)
+            if (cartelaJogador[linha, coluna] == num || nbingo == num)
             {
-                cartelabingo[linha, coluna] = 0;
+                num = 0;
+                return true;
             }
+
         }
-
     }
-}
-
-
-//MAIN
-NumeroJogadores();
-Console.WriteLine(NumeroJogadores);
-NumeroCartelas();
-Console.WriteLine(NumeroCartelas);
-CartelaBase();
-CartelaJogador();
-int[,] cartela = CartelaJogador();
-
+    return false;
+} //falta testar, o número marcado troca por zero
 
 //verificação soma linhas, se for = 0 -> ponto!
 //verificaçao soma coluna, se for = 0 -> ponto!
@@ -168,9 +134,13 @@ int[,] cartela = CartelaJogador();
 }
 */
 
-
-
-
-
-
-
+//MAIN
+NumeroJogadores();
+Console.WriteLine(NumeroJogadores);
+NumeroCartelas();
+Console.WriteLine(NumeroCartelas);
+CartelaBase();
+Console.WriteLine();
+SorteioCartela();
+Console.WriteLine(cartelaSorteio);
+//SorteioBingo();
